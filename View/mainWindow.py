@@ -1,7 +1,7 @@
 import os
-import re
-from fileManager import *
+from fileManager import lister_doublons, supprimer_fichiers
 from PySide6.QtWidgets import QWidget, QVBoxLayout, QLineEdit, QPushButton, QFileDialog, QMessageBox
+from View.duplicateFilesDialog import DuplicateFilesDialog
 
 # Classe principale de la fenêtre
 class MainWindow(QWidget):
@@ -43,8 +43,8 @@ class MainWindow(QWidget):
         if folder and os.path.isdir(folder):
             doublons = lister_doublons(folder)
             if doublons:
-                supprimer_fichiers(doublons)
-                QMessageBox.information(self, "Succès", "Les fichiers doublons ont été supprimés.")
+                self.duplicate_files_window = DuplicateFilesDialog(doublons, self)
+                self.duplicate_files_window.exec_()
             else:
                 QMessageBox.information(self, "Info", "Aucun fichier doublon trouvé.")
         else:

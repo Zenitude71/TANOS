@@ -33,7 +33,6 @@ def lister_doublons(dossier):
     
     return fichiers_doublons
 
-
 def supprimer_fichiers(fichiers_doublons):
     for fichier in fichiers_doublons:
         print(f"Suppression du doublon: {fichier}")
