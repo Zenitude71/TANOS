@@ -32,13 +32,17 @@ class MainWindow(QWidget):
         self.recursive_checkbox = QCheckBox("Récursif", self)
         self.layout.addWidget(self.recursive_checkbox)
 
+        # Checkbox pour envoyer à la corbeille au lieu de supprimer
+        self.trash_checkbox = QCheckBox("Supprimer définitivement", self)
+        self.layout.addWidget(self.trash_checkbox)
+
         # Bouton pour ouvrir le dialogue de sélection de dossier
         self.select_button = QPushButton("Sélectionner le dossier", self)
         self.select_button.clicked.connect(self.select_folder)
         self.layout.addWidget(self.select_button)
 
         # Bouton pour supprimer les doublons
-        self.delete_button = QPushButton("Supprimer les doublons", self)
+        self.delete_button = QPushButton("Rechercher les doublons", self)
         self.delete_button.clicked.connect(self.delete_duplicates)
         self.layout.addWidget(self.delete_button)
 
@@ -54,10 +58,11 @@ class MainWindow(QWidget):
     def delete_duplicates(self):
         folder = self.path_text.text()
         recursive = self.recursive_checkbox.isChecked()
+        to_trash = not(self.trash_checkbox.isChecked())
         if folder and os.path.isdir(folder):
             doublons = lister_doublons(folder, recursive)
             if doublons:
-                self.duplicate_files_window = DuplicateFilesDialog(doublons, self)
+                self.duplicate_files_window = DuplicateFilesDialog(doublons, to_trash, self)
                 self.duplicate_files_window.exec_()
             else:
                 QMessageBox.information(self, "Info", "Aucun fichier doublon trouvé.")

@@ -1,5 +1,6 @@
 import os
 import re
+from send2trash import send2trash
 
 def lister_doublons(dossier, recursive=False):
     # Expression régulière pour détecter les fichiers doublons
@@ -39,3 +40,8 @@ def supprimer_fichiers(fichiers_doublons):
     for fichier in fichiers_doublons:
         print(f"Suppression du doublon: {fichier}")
         os.remove(fichier)
+
+def envoyer_a_la_corbeille(fichiers_doublons):
+    for fichier in fichiers_doublons:
+        print(f"Envoi à la corbeille: {fichier}")
+        send2trash(fichier)

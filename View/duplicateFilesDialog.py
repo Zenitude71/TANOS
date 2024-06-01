@@ -1,7 +1,7 @@
 from PySide6.QtWidgets import QDialog, QVBoxLayout, QPushButton, QCheckBox, QMessageBox, QScrollArea, QWidget
 
 class DuplicateFilesDialog(QDialog):
-    def __init__(self, doublons, parent=None):
+    def __init__(self, doublons, to_trash, parent=None):
         super().__init__(parent)
 
         self.setWindowTitle("Liste des doublons")
@@ -42,17 +42,21 @@ class DuplicateFilesDialog(QDialog):
         self.setLayout(self.layout)
 
         self.doublons = doublons
+        self.to_trash = to_trash
 
     def delete_selected_files(self):
         fichiers_a_supprimer = [checkbox.text() for checkbox in self.checkboxes if checkbox.isChecked()]
 
         if fichiers_a_supprimer:
             try:
-                from fileManager import supprimer_fichiers
-                supprimer_fichiers(fichiers_a_supprimer)
-                QMessageBox.information(self, "Succès", f"{len(fichiers_a_supprimer)} fichiers doublons ont été supprimés.")
-                self.accept()  # Fermer la fenêtre après suppression
+                from fileManager import supprimer_fichiers, envoyer_a_la_corbeille
+                if self.to_trash:
+                    envoyer_a_la_corbeille(fichiers_a_supprimer)
+                else:
+                    supprimer_fichiers(fichiers_a_supprimer)
+                QMessageBox.information(self, "Succès", f"{len(fichiers_a_supprimer)} fichiers doublons ont été traités.")
+                self.accept()  # Fermer la fenêtre après traitement
             except Exception as e:
-                QMessageBox.critical(self, "Erreur", f"Une erreur s'est produite lors de la suppression des fichiers: {e}")
+                QMessageBox.critical(self, "Erreur", f"Une erreur s'est produite lors du traitement des fichiers: {e}")
         else:
             QMessageBox.warning(self, "Info", "Aucun fichier sélectionné pour suppression.")
