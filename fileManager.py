@@ -1,7 +1,7 @@
 import os
 import re
 
-def lister_doublons(dossier):
+def lister_doublons(dossier, recursive=False):
     # Expression régulière pour détecter les fichiers doublons
     pattern = re.compile(r'^(.*)\((\d+)\)(\.[^.]+)$')
     
@@ -9,20 +9,19 @@ def lister_doublons(dossier):
     fichiers_originaux = set()
     fichiers_doublons = []
 
-    for nom_fichier in os.listdir(dossier):
-        chemin_complet = os.path.join(dossier, nom_fichier)
-        
-        # Vérifier si c'est un fichier
-        if os.path.isfile(chemin_complet):
+    for root, dirs, files in os.walk(dossier):
+        for nom_fichier in files:
+            chemin_complet = os.path.normpath(os.path.join(root, nom_fichier))
+            
             # Chercher un match avec le pattern des fichiers doublons
             match = pattern.match(nom_fichier)
             if match:
                 nom_base = match.group(1).strip()
                 extension = match.group(3)
-                nom_original = f"{nom_base}{extension}"
+                nom_original = os.path.normpath(os.path.join(root, f"{nom_base}{extension}"))
 
                 # Vérifier si le fichier original existe
-                if nom_original in fichiers_originaux or os.path.exists(os.path.join(dossier, nom_original)):
+                if nom_original in fichiers_originaux or os.path.exists(nom_original):
                     fichiers_doublons.append(chemin_complet)
                 else:
                     # Ajouter le nom original à l'ensemble pour référence future
@@ -30,6 +29,9 @@ def lister_doublons(dossier):
             else:
                 # Ajouter le nom de fichier à l'ensemble des fichiers originaux
                 fichiers_originaux.add(nom_fichier)
+        
+        if not recursive:
+            break
     
     return fichiers_doublons
 

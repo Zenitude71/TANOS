@@ -1,6 +1,6 @@
 def create_files(n):
     for i in range(1, n + 1):
-        filename = f"./ToRemove/fichier({i}).txt"
+        filename = f"./ToRemove/D1/fichier({i}).txt"
         with open(filename, 'w') as file:
             file.write(f"Contenu du fichier {i}\n")
 

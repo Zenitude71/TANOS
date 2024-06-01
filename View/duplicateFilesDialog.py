@@ -28,6 +28,9 @@ class DuplicateFilesDialog(QDialog):
             self.checkboxes.append(checkbox)
             scroll_layout.addWidget(checkbox)
 
+        # Assurer que le contenu commence en haut du contenant
+        scroll_layout.addStretch()
+
         scroll_area.setWidget(scroll_widget)
         self.layout.addWidget(scroll_area)
 

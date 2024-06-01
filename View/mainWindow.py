@@ -1,6 +1,6 @@
 import os
-from fileManager import lister_doublons, supprimer_fichiers
-from PySide6.QtWidgets import QWidget, QVBoxLayout, QLineEdit, QPushButton, QFileDialog, QMessageBox
+from fileManager import lister_doublons
+from PySide6.QtWidgets import QWidget, QVBoxLayout, QLineEdit, QPushButton, QFileDialog, QMessageBox, QCheckBox
 from View.duplicateFilesDialog import DuplicateFilesDialog
 
 # Classe principale de la fenêtre
@@ -18,6 +18,10 @@ class MainWindow(QWidget):
         # Zone de texte pour afficher le chemin du dossier sélectionné
         self.path_text = QLineEdit(self)
         self.layout.addWidget(self.path_text)
+
+        # Checkbox pour la recherche récursive
+        self.recursive_checkbox = QCheckBox("Récursif", self)
+        self.layout.addWidget(self.recursive_checkbox)
 
         # Bouton pour ouvrir le dialogue de sélection de dossier
         self.select_button = QPushButton("Sélectionner le dossier", self)
@@ -40,8 +44,9 @@ class MainWindow(QWidget):
     # Fonction pour supprimer les doublons dans le dossier sélectionné
     def delete_duplicates(self):
         folder = self.path_text.text()
+        recursive = self.recursive_checkbox.isChecked()
         if folder and os.path.isdir(folder):
-            doublons = lister_doublons(folder)
+            doublons = lister_doublons(folder, recursive)
             if doublons:
                 self.duplicate_files_window = DuplicateFilesDialog(doublons, self)
                 self.duplicate_files_window.exec_()
