@@ -1,6 +1,8 @@
 import os
 from fileManager import lister_doublons
 from PySide6.QtWidgets import QWidget, QVBoxLayout, QLineEdit, QPushButton, QFileDialog, QMessageBox, QCheckBox
+from PySide6.QtGui import QIcon
+from PySide6.QtCore import Qt
 from View.duplicateFilesDialog import DuplicateFilesDialog
 
 # Classe principale de la fenêtre
@@ -9,9 +11,16 @@ class MainWindow(QWidget):
         super().__init__()
 
         self.setWindowTitle("TANOS")
-        
-        # Définir la taille minimale de la fenêtre
-        self.setMinimumSize(400, 200)
+
+        # Définir l'icône de la fenêtre
+        self.setWindowIcon(QIcon("assets/icon.png"))
+
+        # Définir la taille fixe de la fenêtre
+        self.setFixedSize(400, 200)
+
+        # Désactiver les boutons de maximisation et de redimensionnement
+        self.setWindowFlags(self.windowFlags() & ~Qt.WindowMaximizeButtonHint & ~Qt.WindowMinimizeButtonHint)
+        self.setWindowFlags(self.windowFlags() | Qt.WindowCloseButtonHint)
         
         self.layout = QVBoxLayout()
 
